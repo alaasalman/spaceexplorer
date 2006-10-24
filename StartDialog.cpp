@@ -53,18 +53,15 @@ StartDialog::StartDialog(QWidget* parent)
   this->onChangeNeutralPlanet(1);
   this->onChangePlayer(1);
   this->onChangePlayer(2);
-    
 
   connect(addHuman, SIGNAL(clicked()), this, SLOT(onAddHumanPlayer()));
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-  connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(okButton, SIGNAL(clicked()), this, SLOT(onFinishedDialog()));
   connect(playerNumbers, SIGNAL(valueChanged(int)), this, SLOT(onChangePlayer(int)));
   connect(neutralPlanetNumbers, SIGNAL(valueChanged(int)), this, SLOT(onChangeNeutralPlanet(int)));
   connect(turnsNumber, SIGNAL(valueChanged(int)), this, SLOT(onChangeTurns(int)));
 
-  //this->addPlayer();
-  //this->addPlayer();
-
+  
   QGridLayout* qglayout = new QGridLayout();
   
   qglayout->addWidget(playerNum, 0, 0);
@@ -121,7 +118,7 @@ void StartDialog::onAddHumanPlayer()
 	  
 	  temp = playerList->takeItem(i);
 	  playerList->insertItem(i, new QListWidgetItem(temp->icon(), hName));
-	  emit addHumanPlayer(hName, playerColors[i]);
+	  
 	  return;
 	}
     }
@@ -130,8 +127,7 @@ void StartDialog::onAddHumanPlayer()
   QPixmap tinyColor(16, 16);
   tinyColor.fill(hColor);
   playerList->addItem(new QListWidgetItem(QIcon(tinyColor), hName));
-  emit addHumanPlayer(hName, hColor);
-  
+    
   this->onChangePlayer(playerNumbers->value() + 1);
   playerNumbers->setValue(playerNumbers->value() + 1);
   numOfPlayers++;
@@ -158,13 +154,11 @@ void StartDialog::onChangePlayer(int value)
 void StartDialog::onChangeTurns(int value)
 {
   turnsNum->setText(QString("Number of turns: %1").arg(value)); 
-  emit changeTurnsNum(value);
 }
 
 void StartDialog::onChangeNeutralPlanet(int value)
 {
   neutralPlanetNum->setText(QString("Number of neutral planets: %1").arg(value));
-  emit changeNeutralPlanetsNum(value);
 }
 
 void StartDialog::onAddComputerPlayer()
@@ -178,7 +172,7 @@ void StartDialog::onAddComputerPlayer()
 
   
   playerList->addItem(new QListWidgetItem(QIcon(tinyColor), compName));
-  emit addComputerPlayer(compName, compColor);
+
   numOfPlayers++;
       
  
@@ -189,6 +183,26 @@ void StartDialog::removePlayer()
   delete playerList->takeItem(playerList->count() - 1);
   
   numOfPlayers--;
+}
+
+void StartDialog::onFinishedDialog()
+{
+  for(int i=0; i<playerList->count(); i++)
+    {
+      if(playerList->item(i)->text().startsWith("Comp"))
+	{
+	  emit addComputerPlayer(playerList->item(i)->text(), playerColors[i]);
+	}
+      else
+	{
+	  emit addHumanPlayer(playerList->item(i)->text(), playerColors[i]);
+	}
+    }
+
+  emit changeTurnsNum(turnsNumber->value());
+  emit changeNeutralPlanetsNum(neutralPlanetNumbers->value()); 
+  this->accept();
+    
 }
 
 StartDialog::~StartDialog()

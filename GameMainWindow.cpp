@@ -71,8 +71,9 @@ void GameMainWindow::setupConnections()
 
 void GameMainWindow::newGame()
 {
-  startDialog = new StartDialog(this);
   gameController = new GameController();
+  startDialog = new StartDialog(this);
+
   this->setupConnections();
 
   if(startDialog->exec() == QDialog::Accepted)

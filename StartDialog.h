@@ -11,14 +11,18 @@ class StartDialog : public QDialog
  public:
   StartDialog(QWidget*);
   ~StartDialog();
+
+ private:
   void onAddComputerPlayer();
   void removePlayer();
-
-  public slots:
+  
+  
+  private slots:
     void onAddHumanPlayer();
   void onChangePlayer(int);
   void onChangeTurns(int);
   void onChangeNeutralPlanet(int);
+  void onFinishedDialog();
 
  signals:
   void addHumanPlayer(QString, QColor);

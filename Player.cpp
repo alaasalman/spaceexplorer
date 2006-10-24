@@ -5,10 +5,11 @@ Player::Player()
 {
 }
 
-Player::Player(QString initialName, QColor initialColor)
+Player::Player(QString initialName, QColor initialColor, bool computerPlayer)
 {
   name = initialName;
   color = initialColor;
+  this->computer = computerPlayer;
 }
 
 Player::~Player()
@@ -33,4 +34,14 @@ QColor Player::getColor()
 void Player::setColor(QColor newColor)
 {
   color = newColor;
+}
+
+bool Player::getComputer()
+{
+  return this->computer;
+}
+
+void Player::setComputer(bool newComputer)
+{
+  this->computer = newComputer;
 }

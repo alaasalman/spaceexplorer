@@ -10,16 +10,19 @@ class Player : public QObject
 
  public:
   Player();
-  Player(QString, QColor);
+  Player(QString, QColor, bool);
   ~Player();
   QString getName();
   void setName(QString);
   QColor getColor();
   void setColor(QColor);
+  bool getComputer();
+  void setComputer(bool);
 
  private:
   QString name;
   QColor color;
+  bool computer;
 
 };
 

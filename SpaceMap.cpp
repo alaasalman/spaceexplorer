@@ -4,7 +4,7 @@
 using namespace std;
 
 SpaceMap::SpaceMap(QWidget* parent)
-    :QTableWidget(8,8,parent)
+    :QTableWidget(16,16,parent)
 {
     
     this->horizontalHeader()->hide();
@@ -47,8 +47,8 @@ void SpaceMap::onSpacePressed(int row, int column)
 
 void SpaceMap::onSpaceEntered(int row, int column)
 {
-  cout<<"Entered "<<row<<" "<<column<<endl;
- if((row >= 0 & column >= 0) && this->cellWidget(row, column) != NULL)
+  //cout<<"Entered "<<row<<" "<<column<<endl;
+  if((row >= 0 & column >= 0) && this->cellWidget(row, column) != NULL)
     {
       emit overPlanet(((Planet*)this->cellWidget(row, column)));
     }

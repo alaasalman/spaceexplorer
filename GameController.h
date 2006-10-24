@@ -29,6 +29,8 @@ class GameController : public QObject
 
  private:
   QVector<Player*> players;
+  int turns;
+  int planets;
 
 };
 
