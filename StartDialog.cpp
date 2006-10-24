@@ -94,12 +94,6 @@ void StartDialog::onAddHumanPlayer()
 {
   QString hName = humanName->text();
 
-
-  if(numOfPlayers == 9)
-    {
-      return;
-    }
-  
   if(hName.isEmpty())
     {
       return;
@@ -121,6 +115,11 @@ void StartDialog::onAddHumanPlayer()
 	  
 	  return;
 	}
+    }
+
+  if(numOfPlayers == 9)
+    {
+      return;
     }
 
   QColor hColor = playerColors[numOfPlayers];

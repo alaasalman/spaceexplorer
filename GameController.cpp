@@ -57,7 +57,7 @@ void GameController::populateMap()
       p->setName("FOO");
       p->setOwner(players[j]->getName());
       emit triggerPlanetLocate(p, 0, j+1);
-      std::cout<<players[j]->getName().toStdString()<<" at "<<j+1<<std::endl;
+      
     }
 
 }
