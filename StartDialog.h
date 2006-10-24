@@ -11,15 +11,20 @@ class StartDialog : public QDialog
  public:
   StartDialog(QWidget*);
   ~StartDialog();
-  void addPlayer();
+  void onAddComputerPlayer();
   void removePlayer();
 
   public slots:
     void onAddHumanPlayer();
-  void onAddPlayer(int);
+  void onChangePlayer(int);
+  void onChangeTurns(int);
+  void onChangeNeutralPlanet(int);
 
  signals:
   void addHumanPlayer(QString, QColor);
+  void changeTurnsNum(int);
+  void changeNeutralPlanetsNum(int);
+  void addComputerPlayer(QString, QColor);
   
  private:
   QListWidget* playerList;
@@ -31,6 +36,10 @@ class StartDialog : public QDialog
   QColor playerColors[10];
   QSlider* playerNumbers;
   QLabel* playerNum;
+  QLabel* neutralPlanetNum;
+  QSlider* neutralPlanetNumbers;
+  QLabel* turnsNum;
+  QSlider* turnsNumber;
 };
 
 #endif

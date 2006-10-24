@@ -20,6 +20,9 @@ class GameController : public QObject
     void onStartGame();
   void onEndGame();
   void onAddHumanPlayer(QString, QColor);
+  void onAddComputerPlayer(QString, QColor);
+  void onChangeTurnsNum(int);
+  void onChangeNeutralPlanetsNum(int);
 
  signals:
   void triggerPlanetLocate(Planet*, int, int);

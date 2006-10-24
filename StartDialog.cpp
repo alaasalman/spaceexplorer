@@ -1,6 +1,6 @@
 #include "StartDialog.h"
 
-
+#include <iostream>
 StartDialog::StartDialog(QWidget* parent)
   :QDialog(parent)
 {
@@ -11,7 +11,11 @@ StartDialog::StartDialog(QWidget* parent)
   cancelButton = new QPushButton();
   playerNumbers = new QSlider();
   playerNum = new QLabel();
-
+  neutralPlanetNum = new QLabel();
+  neutralPlanetNumbers = new QSlider();
+  turnsNum = new QLabel();
+  turnsNumber = new QSlider();
+  
 
   addHuman->setText("Add Human Player");
   okButton->setText("Ok");
@@ -19,24 +23,6 @@ StartDialog::StartDialog(QWidget* parent)
   cancelButton->setText("Cancel");
   cancelButton->setIcon(QIcon("pics/button_cancel"));
 
-
-  QVBoxLayout* qvblayoutleft = new QVBoxLayout();
-  
-  qvblayoutleft->addWidget(playerNum);
-  qvblayoutleft->addWidget(playerNumbers);
-  qvblayoutleft->addWidget(playerList);
-  qvblayoutleft->addWidget(humanName);
-  qvblayoutleft->addWidget(addHuman);
-
-  QHBoxLayout* qhblayout = new QHBoxLayout();
-  
-  qhblayout->addWidget(okButton);
-  qhblayout->addWidget(cancelButton);
-  
-  
-  qvblayoutleft->addLayout(qhblayout);
-  
-  this->setLayout(qvblayoutleft);
 
   this->numOfPlayers = 0;
   //  playerColors = new QColor[9];
@@ -54,16 +40,56 @@ StartDialog::StartDialog(QWidget* parent)
   playerNumbers->setMinimum(2);
   playerNumbers->setMaximum(9);
   playerNumbers->setOrientation(Qt::Horizontal);
+  
+  neutralPlanetNumbers->setMinimum(1);
+  neutralPlanetNumbers->setMaximum(35);
+  neutralPlanetNumbers->setOrientation(Qt::Horizontal);
 
-  playerNum->setText("Number of Players: 2");
+  turnsNumber->setMinimum(5);
+  turnsNumber->setMaximum(40);
+  turnsNumber->setOrientation(Qt::Horizontal);
+
+  this->onChangeTurns(5);
+  this->onChangeNeutralPlanet(1);
+  this->onChangePlayer(1);
+  this->onChangePlayer(2);
+    
 
   connect(addHuman, SIGNAL(clicked()), this, SLOT(onAddHumanPlayer()));
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
   connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
-  connect(playerNumbers, SIGNAL(valueChanged(int)), this, SLOT(onAddPlayer(int)));
+  connect(playerNumbers, SIGNAL(valueChanged(int)), this, SLOT(onChangePlayer(int)));
+  connect(neutralPlanetNumbers, SIGNAL(valueChanged(int)), this, SLOT(onChangeNeutralPlanet(int)));
+  connect(turnsNumber, SIGNAL(valueChanged(int)), this, SLOT(onChangeTurns(int)));
 
-  this->addPlayer();
-  this->addPlayer();
+  //this->addPlayer();
+  //this->addPlayer();
+
+  QGridLayout* qglayout = new QGridLayout();
+  
+  qglayout->addWidget(playerNum, 0, 0);
+  qglayout->addWidget(playerNumbers, 1, 0);
+  qglayout->addWidget(playerList, 2, 0);
+  qglayout->addWidget(humanName, 3, 0);
+  qglayout->addWidget(addHuman, 4, 0);
+  qglayout->addWidget(turnsNum, 5, 0);
+  qglayout->addWidget(turnsNumber, 6, 0, 1, 2);
+
+  qglayout->addWidget(neutralPlanetNum, 0, 1);
+  qglayout->addWidget(neutralPlanetNumbers, 1, 1);
+  
+  QHBoxLayout* qhblayout = new QHBoxLayout();
+  
+  qhblayout->addWidget(okButton);
+  qhblayout->addWidget(cancelButton);
+ 
+  this->setFixedSize(550,400);
+ 
+   
+  qglayout->addLayout(qhblayout, 7, 1);
+  this->setLayout(qglayout);
+
+  
   
 }
 
@@ -106,19 +132,19 @@ void StartDialog::onAddHumanPlayer()
   playerList->addItem(new QListWidgetItem(QIcon(tinyColor), hName));
   emit addHumanPlayer(hName, hColor);
   
-  this->onAddPlayer(playerNumbers->value() + 1);
+  this->onChangePlayer(playerNumbers->value() + 1);
   playerNumbers->setValue(playerNumbers->value() + 1);
   numOfPlayers++;
   
 }
 
-void StartDialog::onAddPlayer(int value)
+void StartDialog::onChangePlayer(int value)
 {
   playerNum->setText(QString("Number of Players: %1").arg(value)); 
   
   if(value > playerList->count()) //add players
     {
-      this->addPlayer();
+      this->onAddComputerPlayer();
       return;
     }
   
@@ -129,15 +155,30 @@ void StartDialog::onAddPlayer(int value)
     }
 }
 
-void StartDialog::addPlayer()
+void StartDialog::onChangeTurns(int value)
+{
+  turnsNum->setText(QString("Number of turns: %1").arg(value)); 
+  emit changeTurnsNum(value);
+}
+
+void StartDialog::onChangeNeutralPlanet(int value)
+{
+  neutralPlanetNum->setText(QString("Number of neutral planets: %1").arg(value));
+  emit changeNeutralPlanetsNum(value);
+}
+
+void StartDialog::onAddComputerPlayer()
 {
   
-  QColor hColor = playerColors[numOfPlayers];
+  QColor compColor = playerColors[numOfPlayers];
   QPixmap tinyColor(16, 16);
-  tinyColor.fill(hColor);
+  QString compName = QString("Comp%1").arg(numOfPlayers);
+
+  tinyColor.fill(compColor);
+
   
-  playerList->addItem(new QListWidgetItem(QIcon(tinyColor), QString("Comp%1").arg(numOfPlayers)));
-  //emit addHumanPlayer(hName, hColor);
+  playerList->addItem(new QListWidgetItem(QIcon(tinyColor), compName));
+  emit addComputerPlayer(compName, compColor);
   numOfPlayers++;
       
  
@@ -160,5 +201,9 @@ StartDialog::~StartDialog()
   delete playerColors;
   delete playerNumbers;
   delete playerNum;
+  delete neutralPlanetNum;
+  delete neutralPlanetNumbers;
+  delete turnsNum;
+  delete turnsNumber;
 }
 

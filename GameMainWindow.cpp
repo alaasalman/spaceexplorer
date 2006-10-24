@@ -64,6 +64,9 @@ void GameMainWindow::setupConnections()
 
   connect(startAction, SIGNAL(triggered()), gameController, SLOT(onEndGame()));
   connect(startDialog, SIGNAL(addHumanPlayer(QString, QColor)), gameController, SLOT(onAddHumanPlayer(QString, QColor)));
+  connect(startDialog, SIGNAL(changeTurnsNum(int)), gameController, SLOT(onChangeTurnsNum(int)));
+  connect(startDialog, SIGNAL(changeNeutralPlanetsNum(int)), gameController, SLOT(onChangeNeutralPlanetsNum(int)));
+  connect(startDialog, SIGNAL(addComputerPlayer(QString, QColor)), gameController, SLOT(onAddComputerPlayer(QString, QColor)));
 }
 
 void GameMainWindow::newGame()

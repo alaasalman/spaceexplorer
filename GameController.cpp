@@ -27,6 +27,21 @@ void GameController::onAddHumanPlayer(QString humanName, QColor humanColor)
 
 }
 
+void GameController::onChangeTurnsNum(int turns)
+{
+
+}
+
+void GameController::onChangeNeutralPlanetsNum(int planetsNum)
+{
+
+}
+
+void GameController::onAddComputerPlayer(QString compName, QColor compColor)
+{
+
+}
+
 void GameController::populateMap()
 {
   for(int i=0; i<6; i++)
