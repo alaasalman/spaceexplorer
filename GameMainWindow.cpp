@@ -9,6 +9,11 @@ GameMainWindow::GameMainWindow()
   this->setupActions();
   this->setupToolBar();
   this->setupMenus();
+  this->setMinimumSize(800, 800);
+  //QLabel mainBckgrnd(this);
+  //mainBckgrnd.setGeometry(0, 0, 550, 600);
+  //mainBckgrnd.setPixmap(QPixmap("pics/konquest-splash"));
+  
     
 }
 
@@ -67,6 +72,7 @@ void GameMainWindow::setupConnections()
   connect(startDialog, SIGNAL(changeTurnsNum(int)), gameController, SLOT(onChangeTurnsNum(int)));
   connect(startDialog, SIGNAL(changeNeutralPlanetsNum(int)), gameController, SLOT(onChangeNeutralPlanetsNum(int)));
   connect(startDialog, SIGNAL(addComputerPlayer(QString, QColor)), gameController, SLOT(onAddComputerPlayer(QString, QColor)));
+
 }
 
 void GameMainWindow::newGame()
@@ -80,7 +86,11 @@ void GameMainWindow::newGame()
     {
       gameBoard = new GameBoard(this);
         connect(gameController, SIGNAL(triggerPlanetLocate(Planet*, int, int)), gameBoard, SLOT(onAddPlanet(Planet*, int, int)));
+	connect(gameBoard, SIGNAL(changeTurn()), gameController, SLOT(onChangeTurn()));
+	connect(gameController, SIGNAL(displayControl(QString)), gameBoard, SLOT(onDisplayControl(QString)));
+	connect(gameController, SIGNAL(displayInfo(QString)), gameBoard, SLOT(onDisplayInfo(QString)));
 	gameController->onStartGame();
+
       this->setCentralWidget(gameBoard);
 
       

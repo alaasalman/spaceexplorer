@@ -11,14 +11,22 @@ SpaceMap::SpaceMap(QWidget* parent)
     this->verticalHeader()->hide();
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);  
-    this->setMinimumSize(600, 600);
+    this->setSelectionMode(QAbstractItemView::NoSelection);
+    
+    for(int i=0; i<16; i++)
+      this->setColumnWidth(i, 28);
+    for(int i=0; i<16; i++)
+      this->setRowHeight(i, 28);
+    this->setGeometry(0, 0, 550, 550);
     //    this->resizeRowsToContents();
     //this->resizeColumnsToContents();
 
     this->setMouseTracking(true);
     
+    
     connect(this, SIGNAL(cellPressed(int,int)), this, SLOT(onSpacePressed(int,int)));
     connect(this, SIGNAL(cellEntered(int,int)), this, SLOT(onSpaceEntered(int,int)));
+    
 
 }
 
@@ -32,6 +40,7 @@ void SpaceMap::mouseMoveEvent(QMouseEvent* event)
 
 void SpaceMap::onSpacePressed(int row, int column)
 {
+  
   cout <<"Pressed" <<row<<" "<<column<<endl;
   if(this->cellWidget(row, column) != NULL)
     {

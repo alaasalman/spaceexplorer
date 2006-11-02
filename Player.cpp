@@ -45,3 +45,31 @@ void Player::setComputer(bool newComputer)
 {
   this->computer = newComputer;
 }
+
+void Player::setPlanets(QList<Planet*> newPlanets)
+{
+  this->planets = newPlanets;
+}
+
+QList<Planet*> Player::getPlanets()
+{
+  return planets;
+}
+
+void Player::addToPlanets(Planet* planet)
+{
+  planets.append(planet);
+}
+
+void Player::removeFromPlanets(Planet* planet)
+{
+  int indexFound;
+  
+  indexFound = planets.indexOf(planet);
+  
+  if(indexFound != -1)
+    {
+      planets.removeAt(indexFound);
+    }
+  return;
+}

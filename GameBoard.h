@@ -17,10 +17,20 @@ class GameBoard : public QWidget
  private:
   SpaceMap* spacemap;
   Planet_Info* planet_info;
+  QLabel* controlInfo;
+  QPushButton* endTurn;
+  QTextEdit* displayInfo;
+  
 
   public slots:
     void onAddPlanet(Planet*, int, int);
   void onDisplayPlanet(Planet*);
+  void onDisplayInfo(QString);
+  void onDisplayControl(QString);
+  void onTurnButton();
+
+ signals:
+  void changeTurn();
     
 };
 

@@ -23,12 +23,16 @@ class GameController : public QObject
   void onAddComputerPlayer(QString, QColor);
   void onChangeTurnsNum(int);
   void onChangeNeutralPlanetsNum(int);
+  void onChangeTurn();
 
  signals:
   void triggerPlanetLocate(Planet*, int, int);
+  void displayControl(QString);
+  void displayInfo(QString);
 
  private:
   QVector<Player*> players;
+  int currentPlayer;
   int turns;
   int planets;
 

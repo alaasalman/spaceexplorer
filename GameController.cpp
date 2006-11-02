@@ -3,6 +3,7 @@
 GameController::GameController()
   :QObject()
 {
+  currentPlayer = 0;
 }
 
 GameController::~GameController()
@@ -12,6 +13,8 @@ GameController::~GameController()
 void GameController::onStartGame()
 {
   this->populateMap();
+  
+  emit displayControl(QString("<font color=%1>%2</font>:Select source planet").arg(players[currentPlayer]->getColor().name()).arg(players[currentPlayer]->getName()));
 
 }
 
@@ -37,6 +40,16 @@ void GameController::onChangeNeutralPlanetsNum(int planetsNum)
   this->planets = planetsNum;
 }
 
+void GameController::onChangeTurn()
+{
+  if(currentPlayer < players.size() - 1)
+    currentPlayer++;
+  else
+    currentPlayer = 0;
+
+  emit displayControl(QString("<font color=%1>%2</font>:Select source planet").arg(players[currentPlayer]->getColor().name()).arg(players[currentPlayer]->getName()));
+}
+
 void GameController::onAddComputerPlayer(QString compName, QColor compColor)
 {
   players.append(new Player(compName, compColor, true));
@@ -55,7 +68,8 @@ void GameController::populateMap()
     {
       Planet* p = new Planet();
       p->setName("FOO");
-      p->setOwner(players[j]->getName());
+      p->setOwner(players[j]);
+      players[j]->addToPlanets(p);
       emit triggerPlanetLocate(p, 0, j+1);
       
     }
