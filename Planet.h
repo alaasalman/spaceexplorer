@@ -44,7 +44,7 @@ class Planet : public QWidget
   int production;
   double killpercent;
   bool drawColor;
-  static QTimer timer;
+  QTimer timer;
   
     
 };

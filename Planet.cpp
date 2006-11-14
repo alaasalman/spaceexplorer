@@ -1,7 +1,6 @@
 #include "Planet.h"
 #include <iostream>
 
-QTimer Planet::timer;
 
 Planet::Planet()
   :QWidget()
@@ -17,8 +16,8 @@ Planet::Planet()
  
   this->drawColor = true;
 
-  Planet::timer.setInterval(500);
-  connect(&Planet::timer, SIGNAL(timeout()), this, SLOT(fireTimer()));
+  timer.setInterval(500);
+  connect(&timer, SIGNAL(timeout()), this, SLOT(fireTimer()));
 }
 
 void Planet::paintEvent(QPaintEvent* event)
@@ -53,12 +52,12 @@ void Planet::mousePressEvent(QMouseEvent* event)
 
 void Planet::blink()
 {
-  if(Planet::timer.isActive())
+  if(timer.isActive())
     {
-      Planet::timer.stop();
+      timer.stop();
       return;
     }
-  Planet::timer.start();
+  timer.start();
 }
 void Planet::fireTimer()
 {
