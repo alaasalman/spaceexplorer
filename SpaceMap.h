@@ -15,6 +15,7 @@ class SpaceMap :public QTableWidget
   void paintEvent(QPaintEvent*);
   void placePlanet(Planet*, int, int);
   void mouseMoveEvent(QMouseEvent*);
+  void mousePressEvent(QMouseEvent*);
   
   public slots:
     void onSpacePressed(int,int);

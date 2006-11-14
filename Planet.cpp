@@ -15,7 +15,6 @@ Planet::Planet()
   this->killpercent = 0.0;
   this->production = 0;
  
-  this->selected = false;
   this->drawColor = true;
 
   Planet::timer.setInterval(500);
@@ -49,11 +48,11 @@ void Planet::paintEvent(QPaintEvent* event)
 
 void Planet::mousePressEvent(QMouseEvent* event)
 {
-  if(this->selected == true)
-    return;
+  emit selectPlanet(this);
+}
 
-  this->selected = true;
-  
+void Planet::blink()
+{
   if(Planet::timer.isActive())
     {
       Planet::timer.stop();
@@ -61,12 +60,9 @@ void Planet::mousePressEvent(QMouseEvent* event)
     }
   Planet::timer.start();
 }
-
 void Planet::fireTimer()
 {
-  if(this->selected == false)
-    return;
-
+  qDebug("TIMER");
   if(this->drawColor == true)
     {
       this->drawColor = false;

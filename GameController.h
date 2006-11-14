@@ -4,6 +4,7 @@
 #include <QtGui>
 #include "Planet.h"
 #include "Player.h"
+#include "Fleet.h"
 
 class GameController : public QObject
 {
@@ -24,6 +25,8 @@ class GameController : public QObject
   void onChangeTurnsNum(int);
   void onChangeNeutralPlanetsNum(int);
   void onChangeTurn();
+  void onSetSelectPlanet(Planet*);
+  
 
  signals:
   void triggerPlanetLocate(Planet*, int, int);
@@ -31,6 +34,7 @@ class GameController : public QObject
   void displayInfo(QString);
 
  private:
+  QVector<Fleet*> fleets;
   QVector<Player*> players;
   int currentPlayer;
   int turns;

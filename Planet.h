@@ -24,7 +24,7 @@ class Planet : public QWidget
   void setShips(int);
   void setProduction(int);
   void setKillPercent(double);
-  
+  void blink();
 
  private:
   void mousePressEvent(QMouseEvent*);
@@ -32,6 +32,9 @@ class Planet : public QWidget
   private slots:
   void fireTimer();
 
+ signals:
+  void selectPlanet(Planet*);
+  
   
  private:
   QPixmap* pixie;
@@ -40,7 +43,6 @@ class Planet : public QWidget
   int ships;
   int production;
   double killpercent;
-  bool selected;
   bool drawColor;
   static QTimer timer;
   

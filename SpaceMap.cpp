@@ -38,6 +38,10 @@ void SpaceMap::mouseMoveEvent(QMouseEvent* event)
   this->onSpaceEntered(row, col);
 }
 
+void SpaceMap::mousePressEvent(QMouseEvent* event)
+{
+  cout<<"PRESSED"<<endl;
+}
 void SpaceMap::onSpacePressed(int row, int column)
 {
   
