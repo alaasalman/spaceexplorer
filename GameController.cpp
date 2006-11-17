@@ -78,6 +78,8 @@ void GameController::onSetSelectPlanet(Planet* planet)
       fleet->setSource(planet);
       fleet->setKillPercent(planet->getKillPercent());
       fleet->setOwner(players[currentPlayer]);
+
+      emit displayControl(QString("<font color=%1>%2</font>:Select destination planet").arg(players[currentPlayer]->getColor().name()).arg(players[currentPlayer]->getName()));
     }
   else if(fleet->getDestination() == NULL) /* selecting destination */
     {
@@ -86,7 +88,10 @@ void GameController::onSetSelectPlanet(Planet* planet)
 
       planet->blink();
       fleet->setDestination(planet);
+      
       emit displayShipNumber();
+      
+      emit displayControl(QString("<font color=%1>%2</font>:Number of ships").arg(players[currentPlayer]->getColor().name()).arg(players[currentPlayer]->getName()));
       
     }
   
@@ -106,8 +111,8 @@ void GameController::onSetFleetShipNumber(int ships)
 
   fleet = new Fleet();
   fleets.append(fleet);
-
   
+  emit displayControl(QString("<font color=%1>%2</font>:Select source planet").arg(players[currentPlayer]->getColor().name()).arg(players[currentPlayer]->getName()));
 
 }
 
@@ -117,7 +122,7 @@ void GameController::onDisplayFleets()
 
   for(int i=0; i<fleets.size() - 1; i++)
     {
-      temp += QString("%1").arg(i) + " " + fleets[i]->getSource()->getName() + "->" + fleets[i]->getDestination()->getName() + " " + QString("%1").arg(fleets[i]->getNumShips()); 
+      temp += QString("%1").arg(i) + " " + fleets[i]->getSource()->getName() + "->" + fleets[i]->getDestination()->getName() + " " + QString("%1").arg(fleets[i]->getNumShips()) + ":" + fleets[i]->getOwner()->getName(); 
       
       std::cout<<temp.toStdString()<<std::endl;
       temp = "";
