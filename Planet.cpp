@@ -55,13 +55,15 @@ void Planet::blink()
   if(timer.isActive())
     {
       timer.stop();
+      this->drawColor = true;
+      this->update();
       return;
     }
   timer.start();
 }
 void Planet::fireTimer()
 {
-  qDebug("TIMER");
+  //  qDebug("TIMER");
   if(this->drawColor == true)
     {
       this->drawColor = false;

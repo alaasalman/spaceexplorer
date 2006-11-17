@@ -12,6 +12,7 @@ class GameBoard : public QWidget
  public:
   GameBoard(QWidget*);
   ~GameBoard();
+  void keyPressEvent(QKeyEvent*);
   
   
  private:
@@ -20,6 +21,7 @@ class GameBoard : public QWidget
   QLabel* controlInfo;
   QPushButton* endTurn;
   QTextEdit* displayInfo;
+  QLineEdit* shipNumber;
   
 
   public slots:
@@ -28,9 +30,12 @@ class GameBoard : public QWidget
   void onDisplayInfo(QString);
   void onDisplayControl(QString);
   void onTurnButton();
+  void onDisplayShipNumber();
+  void onShipNumberSelect();
 
  signals:
   void changeTurn();
+  void setFleetShipNumber(int);
     
 };
 

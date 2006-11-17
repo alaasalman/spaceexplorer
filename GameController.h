@@ -26,12 +26,15 @@ class GameController : public QObject
   void onChangeNeutralPlanetsNum(int);
   void onChangeTurn();
   void onSetSelectPlanet(Planet*);
+  void onSetFleetShipNumber(int);
+  void onDisplayFleets();
   
 
  signals:
   void triggerPlanetLocate(Planet*, int, int);
   void displayControl(QString);
   void displayInfo(QString);
+  void displayShipNumber();
 
  private:
   QVector<Fleet*> fleets;

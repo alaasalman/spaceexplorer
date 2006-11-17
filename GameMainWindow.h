@@ -31,6 +31,7 @@ class GameMainWindow : public QMainWindow
   QAction* startAction;
   QAction* endAction;
   QAction* exitAction;
+  QAction* fleetAction;
   QToolBar* toolBar;
   QMenu* gameMenu;
   

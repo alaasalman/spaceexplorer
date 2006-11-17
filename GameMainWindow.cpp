@@ -14,7 +14,8 @@ GameMainWindow::GameMainWindow()
   //mainBckgrnd.setGeometry(0, 0, 550, 600);
   //mainBckgrnd.setPixmap(QPixmap("pics/konquest-splash"));
   
-    
+ connect(startAction, SIGNAL(triggered()), this, SLOT(newGame()));
+  connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));    
 }
 
 GameMainWindow::~GameMainWindow()
@@ -34,10 +35,10 @@ void GameMainWindow::setupActions()
   exitAction = new QAction(QIcon("pics/exit"), tr("E&xit"), this);
   exitAction->setEnabled(true);
 
-  connect(startAction, SIGNAL(triggered()), this, SLOT(newGame()));
-  connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
+  fleetAction = new QAction(QIcon("pics/ruler"), tr("&Fleet"), this);
+  fleetAction->setEnabled(false);
 
-
+ 
 }
 
 void GameMainWindow::setupToolBar()
@@ -46,6 +47,7 @@ void GameMainWindow::setupToolBar()
   
   toolBar->addAction(startAction);
   toolBar->addAction(endAction); 
+  toolBar->addAction(fleetAction);
   toolBar->addSeparator(); 
   toolBar->addAction(exitAction);
 
@@ -58,6 +60,7 @@ void GameMainWindow::setupMenus()
   gameMenu = menuBar()->addMenu(tr("&Game"));
   gameMenu->addAction(startAction);
   gameMenu->addSeparator();
+  gameMenu->addAction(fleetAction);
   gameMenu->addAction(endAction);
   gameMenu->addSeparator();
   gameMenu->addAction(exitAction);
@@ -66,8 +69,9 @@ void GameMainWindow::setupMenus()
 
 void GameMainWindow::setupConnections()
 {
-
+ 
   connect(startAction, SIGNAL(triggered()), gameController, SLOT(onEndGame()));
+  connect(fleetAction, SIGNAL(triggered()), gameController, SLOT(onDisplayFleets()));
   connect(startDialog, SIGNAL(addHumanPlayer(QString, QColor)), gameController, SLOT(onAddHumanPlayer(QString, QColor)));
   connect(startDialog, SIGNAL(changeTurnsNum(int)), gameController, SLOT(onChangeTurnsNum(int)));
   connect(startDialog, SIGNAL(changeNeutralPlanetsNum(int)), gameController, SLOT(onChangeNeutralPlanetsNum(int)));
@@ -89,9 +93,12 @@ void GameMainWindow::newGame()
 	connect(gameBoard, SIGNAL(changeTurn()), gameController, SLOT(onChangeTurn()));
 	connect(gameController, SIGNAL(displayControl(QString)), gameBoard, SLOT(onDisplayControl(QString)));
 	connect(gameController, SIGNAL(displayInfo(QString)), gameBoard, SLOT(onDisplayInfo(QString)));
+	connect(gameController, SIGNAL(displayShipNumber()), gameBoard, SLOT(onDisplayShipNumber()));
+	connect(gameBoard, SIGNAL(setFleetShipNumber(int)), gameController, SLOT(onSetFleetShipNumber(int)));
 	gameController->onStartGame();
 
-      this->setCentralWidget(gameBoard);
+	fleetAction->setEnabled(true);
+	this->setCentralWidget(gameBoard);
 
       
     }

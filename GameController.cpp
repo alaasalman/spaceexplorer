@@ -58,7 +58,7 @@ void GameController::onAddComputerPlayer(QString compName, QColor compColor)
 void GameController::onSetSelectPlanet(Planet* planet)
 {
   Fleet* fleet = NULL;
-  planet->blink();
+  
   /* on first selection and since last assumes that the vector is not empty */
   if(fleets.isEmpty())
     {
@@ -70,19 +70,60 @@ void GameController::onSetSelectPlanet(Planet* planet)
   
   if(fleet->getSource() == NULL) /* selecting source */
     {
+
+      if(planet->getOwner() != players[currentPlayer]) /* if trying to choose a source planet that isn't yours */
+	return;
+
+      planet->blink();
       fleet->setSource(planet);
       fleet->setKillPercent(planet->getKillPercent());
       fleet->setOwner(players[currentPlayer]);
     }
-  else /* selecting destination */
+  else if(fleet->getDestination() == NULL) /* selecting destination */
     {
+      if(fleet->getSource() == planet) /* source and destination are the same */
+	return;
+
+      planet->blink();
       fleet->setDestination(planet);
-      fleet = new Fleet();
-      fleets.append(fleet);
+      emit displayShipNumber();
+      
     }
+  
 
 }
 
+void GameController::onSetFleetShipNumber(int ships)
+{
+  Fleet* fleet = NULL;
+
+  fleet = fleets.last();
+  
+  fleet->setNumShips(ships);
+
+  fleet->getSource()->blink();
+  fleet->getDestination()->blink();
+
+  fleet = new Fleet();
+  fleets.append(fleet);
+
+  
+
+}
+
+void GameController::onDisplayFleets()
+{
+  QString temp;
+
+  for(int i=0; i<fleets.size() - 1; i++)
+    {
+      temp += QString("%1").arg(i) + " " + fleets[i]->getSource()->getName() + "->" + fleets[i]->getDestination()->getName() + " " + QString("%1").arg(fleets[i]->getNumShips()); 
+      
+      std::cout<<temp.toStdString()<<std::endl;
+      temp = "";
+    }
+
+}
 
 void GameController::populateMap()
 {
@@ -99,7 +140,7 @@ void GameController::populateMap()
   for(int j=0; j<players.size(); j++)
     {
       Planet* p = new Planet();
-      p->setName("FOO");
+      p->setName(QString("FO%1").arg(j));
       p->setOwner(players[j]);
       players[j]->addToPlanets(p);
       
