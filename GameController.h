@@ -37,12 +37,14 @@ class GameController : public QObject
   void displayShipNumber();
 
  private:
-  QVector<Fleet*> fleets;
+  QList<Fleet*> fleets;
   QVector<Player*> players;
   int currentPlayer;
-  int turns;
+  int totalTurns;
   int planets;
-
+  int currentTurn;
+  static const QString pNames[];
+  
 };
 
 #endif

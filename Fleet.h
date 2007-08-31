@@ -19,6 +19,9 @@ class Fleet
   void setNumShips(int);
   void setOwner(Player*);
   void setKillPercent(double);
+  int getArrivalTurn();
+  void setArrivalTurn(int);
+
 
  private:
   Planet* source;
@@ -26,6 +29,7 @@ class Fleet
   int numships;
   double killpercent;
   Player* owner;
+  int arrivalTurn;
 
 };
 

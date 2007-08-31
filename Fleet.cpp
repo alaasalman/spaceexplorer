@@ -7,6 +7,7 @@ Fleet::Fleet()
   this->numships = 0;
   this->killpercent = 0.0;
   this->owner = NULL;
+  this->arrivalTurn = 1;
 }
 
 Fleet::~Fleet()
@@ -61,4 +62,14 @@ void Fleet::setOwner(Player* newOwner)
 void Fleet::setKillPercent(double newKillPercent)
 {
   this->killpercent = newKillPercent;
+}
+
+void Fleet::setArrivalTurn(int newArrivalTurn)
+{
+  this->arrivalTurn = newArrivalTurn;
+}
+
+int Fleet::getArrivalTurn()
+{
+  return this->arrivalTurn;
 }

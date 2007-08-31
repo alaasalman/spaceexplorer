@@ -108,6 +108,7 @@ void Planet::setName(QString newName)
 void Planet::setOwner(Player* newOwner)
 {
   this->owner = newOwner;
+  this->update();
 }
 
 void Planet::setShips(int newShips)

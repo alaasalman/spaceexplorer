@@ -1,9 +1,12 @@
 #include "GameController.h"
 #include <iostream>
+
+const QString GameController::pNames[] = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22"};
+
 GameController::GameController()
   :QObject()
 {
-  currentPlayer = 0;
+  
 }
 
 GameController::~GameController()
@@ -11,11 +14,13 @@ GameController::~GameController()
 }
 
 void GameController::onStartGame()
-{
+{  
+  currentPlayer = 0;
+  currentTurn = 1;
   this->populateMap();
   
   emit displayControl(QString("<font color=%1>%2</font>:Select source planet").arg(players[currentPlayer]->getColor().name()).arg(players[currentPlayer]->getName()));
-
+  
 }
 
 void GameController::onEndGame()
@@ -32,7 +37,7 @@ void GameController::onAddHumanPlayer(QString humanName, QColor humanColor)
 
 void GameController::onChangeTurnsNum(int newTurns)
 {
-  this->turns = newTurns;
+  this->totalTurns = newTurns;
 }
 
 void GameController::onChangeNeutralPlanetsNum(int planetsNum)
@@ -42,6 +47,61 @@ void GameController::onChangeNeutralPlanetsNum(int planetsNum)
 
 void GameController::onChangeTurn()
 {
+  currentTurn++;
+
+  /* impose production on owned planets */
+  for(int i=0; i<players.size(); i++)
+    {
+      Player* tempP = players[i];
+      for(int j=0; j<players[i]->getPlanets().size(); j++)
+	{
+	  Planet* tempPl = tempP->getPlanets()[j];
+	  tempPl->setShips( tempPl->getShips() +  tempPl->getProduction());
+	}
+    }
+
+  for(int k=0; k<fleets.size(); k++)
+    {
+      Fleet* tempF = fleets[k];
+      /* fleet has arrived */
+      if(fleets[k]->getArrivalTurn() == currentTurn)
+	{
+	  /* fleet owner same as destination owner, so reinforcing a planet */
+	  if(tempF->getOwner() == tempF->getDestination()->getOwner())
+	    {
+	      tempF->getDestination()->setShips(tempF->getDestination()->getShips() + tempF->getNumShips());
+	    }
+	  else /* attacking planet */
+	    {
+	      double attackScore, defenseScore;
+
+	      attackScore = tempF->getNumShips()*tempF->getKillPercent();
+	      defenseScore = tempF->getDestination()->getShips()*tempF->getDestination()->getKillPercent();
+
+	      if(attackScore >= defenseScore) /* attackers win */
+		{
+		  if(tempF->getDestination()->getOwner() != NULL)
+		    tempF->getDestination()->getOwner()->removeFromPlanets(tempF->getDestination());
+
+		  tempF->getOwner()->addToPlanets(tempF->getDestination());
+		  tempF->getDestination()->setOwner(tempF->getOwner());
+		  
+		  tempF->getDestination()->setShips((int)attackScore-defenseScore);
+		  emit displayInfo(QString("Turn %1: Planet %2 has fallen to %3").arg(currentTurn).arg(tempF->getDestination()->getName()).arg(tempF->getOwner()->getName()));
+		  
+		}
+	      else /* defense wins */
+		{
+		  tempF->getDestination()->setShips((int)defenseScore-attackScore);
+		  emit displayInfo(QString("Turn %1: Planet %2 has held against an attack from %3.").arg(currentTurn).arg(tempF->getDestination()->getName()).arg(tempF->getOwner()->getName()));
+		}
+	    }
+	  /* processed fleet, so remove it */
+	  fleets.removeAt(k);
+	}
+    }
+     
+
   if(currentPlayer < players.size() - 1)
     currentPlayer++;
   else
@@ -103,8 +163,12 @@ void GameController::onSetFleetShipNumber(int ships)
   Fleet* fleet = NULL;
 
   fleet = fleets.last();
+
+  fleet->getSource()->setShips(fleet->getSource()->getShips() - ships);
   
   fleet->setNumShips(ships);
+  fleet->setKillPercent(fleet->getSource()->getKillPercent());
+  fleet->setArrivalTurn(currentTurn+2);
 
   fleet->getSource()->blink();
   fleet->getDestination()->blink();
@@ -122,7 +186,7 @@ void GameController::onDisplayFleets()
 
   for(int i=0; i<fleets.size() - 1; i++)
     {
-      temp += QString("%1").arg(i) + " " + fleets[i]->getSource()->getName() + "->" + fleets[i]->getDestination()->getName() + " " + QString("%1").arg(fleets[i]->getNumShips()) + ":" + fleets[i]->getOwner()->getName(); 
+      temp += QString("%1").arg(i) + " " + fleets[i]->getSource()->getName() + "->" + fleets[i]->getDestination()->getName() + " " + QString("%1").arg(fleets[i]->getNumShips()) + ":" + QString("%1").arg(fleets[i]->getKillPercent()) + " " + fleets[i]->getOwner()->getName(); 
       
       std::cout<<temp.toStdString()<<std::endl;
       temp = "";
@@ -132,26 +196,39 @@ void GameController::onDisplayFleets()
 
 void GameController::populateMap()
 {
+  int nameIterator = 0;
+
   for(int i=0; i<planets; i++)
     {
       Planet* p = new Planet();
-      p->setName(QString("L%1").arg(i));
       
+      p->setName(pNames[nameIterator]);
+      p->setShips(16);
+      p->setKillPercent(0.8);
+      p->setProduction(11);
+
       connect(p, SIGNAL(selectPlanet(Planet*)), this, SLOT(onSetSelectPlanet(Planet*)));
       
       emit triggerPlanetLocate(p, i, i);
+      nameIterator++;
     }
 
   for(int j=0; j<players.size(); j++)
     {
       Planet* p = new Planet();
-      p->setName(QString("FO%1").arg(j));
+     
+      p->setName(pNames[nameIterator]);
       p->setOwner(players[j]);
+      p->setShips(10);
+      p->setProduction(10);
+      p->setKillPercent(0.4);
+
       players[j]->addToPlanets(p);
       
       connect(p, SIGNAL(selectPlanet(Planet*)), this, SLOT(onSetSelectPlanet(Planet*)));
       
       emit triggerPlanetLocate(p, 0, j+1);
+      nameIterator++;
       
     }
 
